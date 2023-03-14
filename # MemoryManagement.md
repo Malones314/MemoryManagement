@@ -81,4 +81,7 @@ dtor，那么就算没有[]也不会造成内存泄漏
 ## operator new/operator delete
 ```cpp
 内部调用malloc
+在设计的某一个类中可以重载operator new和operator delete
+全局的operator new和operator delete也可以重载，但是很少见，因为影响很深远
+  
 ```
