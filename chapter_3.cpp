@@ -19,7 +19,7 @@ int main() {
     // 分配一段内存，大小为sizeof(MyClass)
     void* mem = malloc(sizeof(MyClass));
 
-    // 在这段内存上构造一个MyClass对象
+    // 在这段内存上构造一个MyClass对象, 使用placement new
     MyClass* obj = new(mem) MyClass(123);
 
     // 使用对象
