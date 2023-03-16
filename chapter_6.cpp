@@ -84,12 +84,20 @@ void insert_block( struct Memory_list* m_list, void* insert_node, Memory_pool* m
     prev->next = insert_block;
   }
   //合并空闲块
-  if( ( char*)prev == ( char*)insert_block){
-
+  //检查当前空闲块的前一个块是否是空闲块，以及前一个块与当前块之间的空间是否足够大以合并为一个更大的块。
+  //如果是，则会将前一个块的next指针指向当前块的next指针所指向的块，相当于将当前块从空闲链表中删除，同时
+  //将insert_block指针指向前一个块，相当于将当前块与前一个块合并成一个更大的空闲块。
+  if( ( char*)prev + m_pool->get_per_memory_size() == ( char*)insert_block){
+      prev->next = insert_block->next;
+      insert_block = prev;
   }
-  
-  
 
+  //检查当前空闲块的后一个块是否是空闲块，以及当前块与后一个块之间的空间是否足够大以合并为一个更大的块。
+  //如果是，则会将当前块的next指针指向后一个块的next指针所指向的块，相当于将后一个块从空闲链表中删除，
+  //从而将当前块与后一个块合并成一个更大的空闲块。
+  if( (char*)insert_block + m_pool->get_per_memory_size() == (char*)insert_block->next ){
+    insert_block->next = insert_block->next->next;
+  }
 }
 
 
@@ -135,6 +143,7 @@ class Memory_pool{
 private:
   int per_memory_size; //单个内存块大小
   int total_memory_size;  //总内存池大小
+  struct Memory_list* memory_pool_list; //空闲链表
 public:
   const int get_per_memory_size(){
     return per_memory_size;
