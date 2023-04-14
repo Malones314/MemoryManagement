@@ -133,18 +133,31 @@ void insert_block( struct Memory_list* m_list, void* insert_node, Memory_pool* m
  10. clear() 方法：清空内存池中的所有内存块，用于回收内存。
 ***/
 
-/**
- * 
- * 
- * 
- * **/
-
 class Memory_pool{
 private:
   int per_memory_size; //单个内存块大小
   int total_memory_size;  //总内存池大小
   struct Memory_list* memory_pool_list; //空闲链表
 public:
+  Memory_pool();  //构造函数，完成内存池的初始化
+  ~Memory_pool(); //析构函数，完成内存的释放
+  
+  void* allocate( int needed_block_size); //从内存池中分配指定大小的内存块，如果没有可用内存块，则返回 NULL
+  
+  void deallocate( void* block_address);  //释放已经分配的内存块，将其加入到空闲链表的头部。
+
+  bool is_valid_address( void* check_block);  //检查地址是否是内存池中的合法地址。
+
+  bool is_valid_block_size( size_t block_size );  //检查块大小是否合法，即是否是内存块大小的整数倍。
+
+  void construct( void* block_address );  //对一个已经分配的内存块进行构造操作，即调用其构造函数。
+                                          //因为这个内存池为int类型变量的内存池，故不做任何动作
+
+  void destruct( void* block_address);  //对一个已经分配的内存块进行析构操作，即调用其析构函数。
+                                        //因为这个内存池为int类型变量的内存池，故不做任何动作
+
+  void resize( size_t new_size);  //重新分配内存池的大小，用于动态调整内存池大小。
+  void clear(); //清空内存池中的所有内存块，用于回收内存。
   const int get_per_memory_size(){
     return per_memory_size;
   }
@@ -152,6 +165,7 @@ public:
     return total_memory_size;
   }
 };
+
 
 int main() {
   
